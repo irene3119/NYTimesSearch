@@ -54,9 +54,9 @@ public class Settings implements Serializable{
     }
 
     public String genNewsDesk() {
-        String newsType = isCheck_Arts() ? "\"Arts\"" : "";
-        newsType += isCheck_Fashion() ? "\"Fashion\"" : "";
+        String newsType = isCheck_Arts() ? "\"Arts\" " : "";
+        newsType += isCheck_Fashion() ? "\"Fashion\" " : "";
         newsType += isCheck_Sports() ? "\"Sports\"" : "";
-        return newsType;
+        return newsType.trim();
     }
 }

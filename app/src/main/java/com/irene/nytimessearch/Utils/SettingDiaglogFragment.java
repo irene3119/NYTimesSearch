@@ -108,12 +108,10 @@ public class SettingDiaglogFragment extends DialogFragment implements DatePicker
                 else
                     spinner.setSelection(1);
 
-                if (settings.Check_Arts)
-                    checkbox_arts.setChecked(true);
-                if (settings.Check_Fashion)
-                    checkbox_fashion.setChecked(true);
-                if (settings.Check_Sports)
-                    checkbox_sports.setChecked(true);
+
+                checkbox_arts.setChecked(settings.Check_Arts);
+                checkbox_fashion.setChecked(settings.Check_Fashion);
+                checkbox_sports.setChecked(settings.Check_Sports);
             }
         }
 
@@ -164,7 +162,7 @@ public class SettingDiaglogFragment extends DialogFragment implements DatePicker
         // store the values selected into a Calendar instance
         Log.e("DEBUG","datePicker");
         String day = dayOfMonth >= 10 ? Integer.toString(dayOfMonth) : "0" + Integer.toString(dayOfMonth);
-        String month = monthOfYear >= 10 ? Integer.toString(monthOfYear) : "0" + Integer.toString(monthOfYear);
+        String month = monthOfYear+1 >= 10 ? Integer.toString(monthOfYear+1) : "0" + Integer.toString(monthOfYear+1);
         updateSelectedDate(Integer.toString(year) + "/" + month + "/" + day);
 
     }

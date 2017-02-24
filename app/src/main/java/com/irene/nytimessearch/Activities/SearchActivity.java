@@ -164,7 +164,8 @@ public class SearchActivity extends AppCompatActivity implements SettingDiaglogF
                 params.put("begin_date", settings.getBeginDate());
             }
             params.put("sort", settings.getSort());
-            Log.e("DEBUG", settings.getSort());
+            Log.e("DEBUG", "Sort: "+settings.getSort());
+            Log.e("DEBUG", "News Desk"+settings.genNewsDesk());
             if (settings.genNewsDesk().equals("")){
                 params.put("fq", "news_desk:(" +settings.genNewsDesk()+ ")");
             }
@@ -176,7 +177,7 @@ public class SearchActivity extends AppCompatActivity implements SettingDiaglogF
 
     private void getArticlesByRequest(String url, RequestParams params) {
         AsyncHttpClient client = new AsyncHttpClient();
-        client.setTimeout(50000);
+        client.setTimeout(500000);
         client.get(url,params, new TextHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
