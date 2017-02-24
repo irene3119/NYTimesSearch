@@ -9,16 +9,15 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.irene.nytimessearch.Models.Articles;
 import com.irene.nytimessearch.Models.Doc;
 import com.irene.nytimessearch.R;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 /**
  * Created by Irene on 2017/2/21.
@@ -95,9 +94,9 @@ public class ArticleAdapter extends BaseAdapter {
             {
                 if(doc.multimedia.get(i).subtype.equals("thumbnail"))
                 {
-                    Picasso.with(mContext).load(doc.multimedia.get(i).getImageUrl())
-                            .transform(new RoundedCornersTransformation(2, 2))
-                            .fit()
+                    Glide.with(mContext).load(doc.multimedia.get(i).getImageUrl())
+                            //.transform(new RoundedCornersTransformation(2, 2))
+                            .centerCrop()
                             .placeholder(R.mipmap.ic_launcher)
                             .error(R.mipmap.ic_launcher)
                             .into(holder.image);

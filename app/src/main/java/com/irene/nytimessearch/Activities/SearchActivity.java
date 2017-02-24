@@ -155,7 +155,7 @@ public class SearchActivity extends AppCompatActivity implements SettingDiaglogF
 
     private void genArticleRequest(String url, int page, String query) {
         RequestParams params = new RequestParams();
-        params.put("api-key", "f150cff14d484d8ebaeafb227ff2ed78");
+        params.put("api-key", "your key");
         params.put("page",page);
         params.put("q",query);
         if(settings != null){
