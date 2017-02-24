@@ -2,6 +2,6 @@
 <resources>
     <string-array name="sort_array">
         <item>oldest</item>
-        <item>earliest</item>
+        <item>newest</item>
     </string-array>
 </resources>

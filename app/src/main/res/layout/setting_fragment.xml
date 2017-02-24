@@ -10,12 +10,13 @@
 
         <TextView
             android:id="@+id/tvBeginDate" android:text="Begin Date"
-            android:layout_width="wrap_content" android:layout_height="wrap_content" />
+            android:layout_width="100dp" android:layout_height="wrap_content" />
 
         <EditText
             android:id="@+id/etBeginDate"
             android:layout_width="match_parent"  android:layout_height="wrap_content"
-            android:inputType="text" />
+            android:inputType="text"
+            android:layout_marginLeft="10dp"/>
 
 
     </LinearLayout>
@@ -33,13 +34,14 @@
 
         <TextView
             android:id="@+id/tvSort" android:text="Sort Order"
-            android:layout_width="wrap_content" android:layout_height="wrap_content" />
+            android:layout_width="100dp" android:layout_height="wrap_content" />
 
         <Spinner
             android:id="@+id/spSort"
             android:layout_width="wrap_content"
             android:entries="@array/sort_array"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"/>
 
 
     </LinearLayout>
@@ -51,12 +53,13 @@
 
         <TextView
             android:id="@+id/tvValue" android:text="News Desk Value"
-            android:layout_width="wrap_content" android:layout_height="wrap_content" />
+            android:layout_width="100dp" android:layout_height="wrap_content"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginLeft="10dp">
         <CheckBox android:id="@+id/checkbox_arts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

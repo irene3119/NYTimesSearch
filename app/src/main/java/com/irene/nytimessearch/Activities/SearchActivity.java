@@ -3,15 +3,15 @@ package com.irene.nytimessearch.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Toast;
 
@@ -34,15 +34,13 @@ import cz.msebera.android.httpclient.Header;
 public class SearchActivity extends AppCompatActivity implements SettingDiaglogFragment.SettingItemDialogListener{
 
     @BindView(R.id.gvResults) GridView gvResults;
-    EditText etQuery;
-    Button btnSearch;
 
     SettingDiaglogFragment settingDialogFragment;
 
     private Articles articles;
     private ArticleAdapter articleAdapter;
     private Settings settings = null;
-    private Boolean isFirstTime = true;
+    private String queryItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,17 +50,10 @@ public class SearchActivity extends AppCompatActivity implements SettingDiaglogF
         toolbar.setTitle("News Article Search");
         setSupportActionBar(toolbar);
         ButterKnife.bind(this);
-        setupInitViews();
         setupGridViews();
 
     }
 
-    public void setupInitViews() {
-        //init search column
-        etQuery = (EditText) findViewById(R.id.etQuery);
-        btnSearch = (Button) findViewById(R.id.btnSearch);
-
-    }
 
     public void setupGridViews() {
         //init grid view
@@ -103,9 +94,9 @@ public class SearchActivity extends AppCompatActivity implements SettingDiaglogF
     // This method probably sends out a network request and appends new data items to your adapter.
     public void loadNextDataFromApi(int offset) {
 
-        Log.e("page",String.valueOf(offset)+" test");
-        String query = etQuery.getText().toString();
-        genArticleRequest("http://api.nytimes.com/svc/search/v2/articlesearch.json",offset,query);
+        Log.e("page",String.valueOf(offset)+" page");
+        //String query = etQuery.getText().toString();
+        genArticleRequest("http://api.nytimes.com/svc/search/v2/articlesearch.json",offset,queryItem);
         // Send an API request to retrieve appropriate paginated data
         //  --> Send the request including an offset value (i.e `page`) as a query parameter.
         //  --> Deserialize and construct new model objects from the API response
@@ -117,11 +108,31 @@ public class SearchActivity extends AppCompatActivity implements SettingDiaglogF
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_search, menu);
-//        MenuItem searchItem = menu.findItem(R.id.action_search);
-//        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // perform query here
+                // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
+                // see https://code.google.com/p/android/issues/detail?id=24599
+                searchView.clearFocus();
+                Log.d(this.getClass().getName(),"query:"+ query);
+                Toast.makeText(SearchActivity.this,"Searching for " + query, Toast.LENGTH_LONG).show();
+                queryItem = query;
+                articles.response.docs.clear();
+                genArticleRequest("http://api.nytimes.com/svc/search/v2/articlesearch.json",0,queryItem);
+                return true;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.d(this.getClass().getName(),"onQueryTextChange:"+ newText);
+                return false;
+            }
+        });
 
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -141,16 +152,6 @@ public class SearchActivity extends AppCompatActivity implements SettingDiaglogF
         return super.onOptionsItemSelected(item);
     }
 
-    public void onArticleSearch(View view) {
-        //prepare for api request
-        String query = etQuery.getText().toString();
-
-        //http://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=f150cff14d484d8ebaeafb227ff2ed78
-        Toast.makeText(this,"Search for "+query, Toast.LENGTH_LONG).show();
-
-        genArticleRequest("http://api.nytimes.com/svc/search/v2/articlesearch.json",0,query);
-
-    }
 
     private void genArticleRequest(String url, int page, String query) {
         RequestParams params = new RequestParams();
@@ -163,6 +164,7 @@ public class SearchActivity extends AppCompatActivity implements SettingDiaglogF
                 params.put("begin_date", settings.getBeginDate());
             }
             params.put("sort", settings.getSort());
+            Log.e("DEBUG", settings.getSort());
             if (settings.genNewsDesk().equals("")){
                 params.put("fq", "news_desk:(" +settings.genNewsDesk()+ ")");
             }
@@ -174,6 +176,7 @@ public class SearchActivity extends AppCompatActivity implements SettingDiaglogF
 
     private void getArticlesByRequest(String url, RequestParams params) {
         AsyncHttpClient client = new AsyncHttpClient();
+        client.setTimeout(50000);
         client.get(url,params, new TextHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
